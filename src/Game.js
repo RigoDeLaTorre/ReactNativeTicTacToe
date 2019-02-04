@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text, Alert, Button, Image } from 'react-native'
+import { View, Text, Image } from 'react-native'
 
 import Header from './components/Header'
 import Board from './components/Board'
+import GameResult from './components/GameResult'
 import IconPicker from './components/IconPicker'
+import StartButton from './components/StartButton'
 
 class Game extends Component {
 	state = {
@@ -24,49 +26,6 @@ class Game extends Component {
 			currentPlayer: 1,
 			gameWinner: ''
 		})
-	}
-
-	// Renders button for Start game or restart game
-	renderButton = () => {
-		switch (this.state.gameRunning) {
-			case true:
-				return (
-					<Button
-						onPress={this.handleGameStart}
-						title="Restart Game"
-						color="#7ECA61"
-					/>
-				)
-			case false:
-				return (
-					<Button
-						onPress={this.gameInit}
-						title="Start New Game"
-						color="#7ECA61"
-					/>
-				)
-			default:
-				return <View />
-		}
-	}
-
-	// User clicks Start game or Restart game
-	handleGameStart = () => {
-		if (this.state.gameRunning) {
-			Alert.alert(
-				'Tic-Tac-Toe',
-				'Do you want to restart the game ?',
-				[
-					{
-						text: 'Cancel',
-						onPress: () => console.log('cancel'),
-						style: 'cancel'
-					},
-					{ text: 'OK', onPress: () => this.gameInit() }
-				],
-				{ cancelable: true }
-			)
-		}
 	}
 
 	//renders icon to corresponding player
@@ -220,6 +179,7 @@ class Game extends Component {
 		let sum
 
 		//check rows
+
 		for (let i = 0; i < numberOfTiles; i++) {
 			sum = arr[i][0] + arr[i][1] + arr[i][2]
 			if (sum == 3) {
@@ -230,6 +190,7 @@ class Game extends Component {
 		}
 
 		//check columns
+
 		for (let i = 0; i < numberOfTiles; i++) {
 			sum = arr[0][i] + arr[1][i] + arr[2][i]
 			if (sum == 3) {
@@ -253,42 +214,36 @@ class Game extends Component {
 		} else if (sum == -3) {
 			return -1
 		}
-		// no winners yet
+		// if no winners
 		return 0
 	}
 
 	render() {
 		return (
-			<View style={styles.container}>
+			<View>
 				<Header />
-				<View>
-					<Text style={styles.chooseIcon}>Player 1 Choose your Icon</Text>
+				<View style={styles.container}>
+					<IconPicker
+						selectedValue={this.state.playerImagePicked}
+						handlePickerChange={this.handlePickerChange}
+						player1Image={this.state.player1Image}
+						player2Image={this.state.player2Image}
+					/>
+					<Board
+						onUserSelect={this.onUserSelect}
+						renderIcon={this.renderIcon}
+						gameRunning={this.state.gameRunning}
+					/>
+					<GameResult
+						gameWinner={this.state.gameWinner}
+						gameRunning={this.state.gameRunning}
+						currentPlayer={this.state.currentPlayer}
+					/>
+					<StartButton
+						gameRunning={this.state.gameRunning}
+						gameInit={this.gameInit}
+					/>
 				</View>
-
-				<IconPicker
-					selectedValue={this.state.playerImagePicked}
-					onValueChange={this.handlePickerChange}
-				/>
-
-				<Board
-					onUserSelect={this.onUserSelect}
-					renderIcon={this.renderIcon}
-					gameRunning={this.state.gameRunning}
-				/>
-
-				<View style={styles.winnerTextContainer}>
-					<Text style={styles.winnerText}>
-						{this.state.gameWinner
-							? this.state.gameWinner
-							: this.state.gameRunning && this.state.currentPlayer === 1
-								? 'Player 1 Turn'
-								: this.state.gameRunning && this.state.currentPlayer === -1
-									? 'Player 2 turn'
-									: ''}
-					</Text>
-				</View>
-
-				<View style={{ width: '90%' }}>{this.renderButton()}</View>
 			</View>
 		)
 	}
@@ -296,21 +251,9 @@ class Game extends Component {
 
 const styles = {
 	container: {
-		flex: 1,
 		backgroundColor: '#fff',
 		alignItems: 'center',
 		justifyContent: 'center'
-	},
-	chooseIcon: {
-		marginBottom: 15,
-		marginTop: 15
-	},
-	winnerTextContainer: {
-		marginBottom: 15,
-		marginTop: 15
-	},
-	winnerText: {
-		fontSize: 20
 	}
 }
 
