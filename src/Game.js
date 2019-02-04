@@ -15,7 +15,8 @@ class Game extends Component {
 		playerImagePicked: 'StandardX',
 		player1Image: require('./img/playerX.png'),
 		player2Image: require('./img/playerO.png'),
-		gameWinner: null
+		gameWinner: null,
+		score: [0, 0]
 	}
 
 	//********************** Game initialization **********************
@@ -89,12 +90,14 @@ class Game extends Component {
 			if (winner == 1) {
 				this.setState({
 					gameWinner: 'Player 1 is the Winner !',
-					gameRunning: false
+					gameRunning: false,
+					score: [this.state.score[0] + 1, this.state.score[1]]
 				})
 			} else if (winner == -1) {
 				this.setState({
 					gameWinner: 'Player 2 is the Winner !',
-					gameRunning: false
+					gameRunning: false,
+					score: [this.state.score[0], this.state.score[1] + 1]
 				})
 			} else if (gamePush) {
 				this.setState({ gameWinner: 'Tie Game', gameRunning: false })
@@ -229,6 +232,11 @@ class Game extends Component {
 						player1Image={this.state.player1Image}
 						player2Image={this.state.player2Image}
 					/>
+					<View>
+						<Text>{`The score is ${this.state.score[0]} - ${
+							this.state.score[1]
+						}`}</Text>
+					</View>
 					<Board
 						onUserSelect={this.onUserSelect}
 						renderIcon={this.renderIcon}
