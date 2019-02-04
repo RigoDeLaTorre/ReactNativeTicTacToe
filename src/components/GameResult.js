@@ -7,7 +7,7 @@ const GameResult = ({ gameWinner, gameRunning, currentPlayer }) => (
 			{gameWinner
 				? gameWinner
 				: gameRunning && currentPlayer === 1
-					? 'Player 1 Turn'
+					? 'Player 1 turn'
 					: gameRunning && currentPlayer === -1
 						? 'Player 2 turn'
 						: ''}

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, Alert } from 'react-native'
 
 import Header from './components/Header'
 import Board from './components/Board'
 import GameResult from './components/GameResult'
 import IconPicker from './components/IconPicker'
 import StartButton from './components/StartButton'
+import GameScore from './components/GameScore'
 
 class Game extends Component {
 	state = {
@@ -27,6 +28,21 @@ class Game extends Component {
 			currentPlayer: 1,
 			gameWinner: ''
 		})
+	}
+	resetScore = () => {
+		Alert.alert(
+			'Tic-Tac-Toe',
+			'Are you sure you want to reset the scores ?',
+			[
+				{
+					text: 'Cancel',
+					onPress: () => console.log('cancel'),
+					style: 'cancel'
+				},
+				{ text: 'OK', onPress: () => this.setState({ score: [0, 0] }) }
+			],
+			{ cancelable: true }
+		)
 	}
 
 	//renders icon to corresponding player
@@ -232,21 +248,21 @@ class Game extends Component {
 						player1Image={this.state.player1Image}
 						player2Image={this.state.player2Image}
 					/>
-					<View>
-						<Text>{`The score is ${this.state.score[0]} - ${
-							this.state.score[1]
-						}`}</Text>
-					</View>
+
+					<GameScore resetScore={this.resetScore} score={this.state.score} />
+
 					<Board
 						onUserSelect={this.onUserSelect}
 						renderIcon={this.renderIcon}
 						gameRunning={this.state.gameRunning}
 					/>
+
 					<GameResult
 						gameWinner={this.state.gameWinner}
 						gameRunning={this.state.gameRunning}
 						currentPlayer={this.state.currentPlayer}
 					/>
+
 					<StartButton
 						gameRunning={this.state.gameRunning}
 						gameInit={this.gameInit}
